@@ -11,10 +11,8 @@ class RecyclerViewScrollListener(
     private val horizontalAdapter: HorizontalAdapter,
     private val verticalAdapter: VerticalAdapter,
     private val notificationMode: ScrollListenerNotificationMode
-) :
-    View.OnScrollChangeListener {
+) : View.OnScrollChangeListener {
     private var recyclerViewHorizontal: RecyclerView? = null
-    private val context = recyclerViewVertical.context
     override fun onScrollChange(
         v: View?,
         scrollX: Int,
@@ -23,34 +21,39 @@ class RecyclerViewScrollListener(
         oldScrollY: Int
     ) {
         val layoutManagerVertical = recyclerViewVertical.layoutManager as LinearLayoutManager
+
         recyclerViewHorizontal =
             layoutManagerVertical.findViewByPosition(layoutManagerVertical.findFirstVisibleItemPosition())
                 ?.findViewById(R.id.rv_horizontal) as? RecyclerView
 
-
         when (notificationMode) {
-            ScrollListenerNotificationMode.TOAST -> {
+            ScrollListenerNotificationMode.TOAST -> showChangeWithToast(
+                layoutManagerVertical,
+                isVertical = true
+            )
+            ScrollListenerNotificationMode.TEXT -> showChangeByItemUpdating(
+                layoutManagerVertical,
+                isVertical = true
+            )
+        }
+        initHorizontalRecyclerViewListener()
+    }
 
-                recyclerViewHorizontal?.setOnScrollChangeListener { _, _, _, _, _ ->
-                    val layoutManagerHorizontal =
-                        recyclerViewHorizontal?.layoutManager as? LinearLayoutManager
-                    if (layoutManagerHorizontal != null) {
-                        showChangeWithToast(layoutManagerHorizontal, isVertical = false)
-                    }
+    private fun initHorizontalRecyclerViewListener() {
+        recyclerViewHorizontal?.setOnScrollChangeListener { _, _, _, _, _ ->
+            val layoutManagerHorizontal =
+                recyclerViewHorizontal?.layoutManager as? LinearLayoutManager
+            if (layoutManagerHorizontal != null) {
+                when (notificationMode) {
+                    ScrollListenerNotificationMode.TOAST -> showChangeWithToast(
+                        layoutManagerHorizontal,
+                        isVertical = false
+                    )
+                    ScrollListenerNotificationMode.TEXT -> showChangeByItemUpdating(
+                        layoutManagerHorizontal,
+                        isVertical = false
+                    )
                 }
-                showChangeWithToast(layoutManagerVertical, isVertical = true)
-            }
-
-            ScrollListenerNotificationMode.TEXT -> {
-
-                recyclerViewHorizontal?.setOnScrollChangeListener { _, _, _, _, _ ->
-                    val layoutManagerHorizontal =
-                        recyclerViewHorizontal?.layoutManager as? LinearLayoutManager
-                    if (layoutManagerHorizontal != null) {
-                        showChangeByItemUpdating(layoutManagerHorizontal, isVertical = false)
-                    }
-                }
-                showChangeByItemUpdating(layoutManagerVertical, isVertical = true)
             }
         }
     }
@@ -84,7 +87,6 @@ class RecyclerViewScrollListener(
 
         val rowRect = Rect();
         layoutManager.findViewByPosition(position)?.getGlobalVisibleRect(rowRect)
-
 
         val percentFirst = if (rowRect.right >= rvRect.right) {
             val visibleHeightFirst = rvRect.right - rowRect.left
@@ -164,7 +166,6 @@ class RecyclerViewScrollListener(
             verticalAdapter.submitList(list)
 
              */
-
         }
 
     }

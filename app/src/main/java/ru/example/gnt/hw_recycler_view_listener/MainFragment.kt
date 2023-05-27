@@ -14,8 +14,7 @@ import ru.example.gnt.hw_recycler_view_listener.databinding.MainFragmentBinding
 class MainFragment : Fragment() {
     private var _binding: MainFragmentBinding? = null
     private val binding by lazy { _binding!! }
-
-
+    private var scrollListener: RecyclerViewScrollListener? = null
 
     private val horizontalAdapter: HorizontalAdapter by lazy {
         HorizontalAdapter().apply {
@@ -69,14 +68,13 @@ class MainFragment : Fragment() {
     }
 
     private fun initScrollListener() {
-        binding.rvVertical.setOnScrollChangeListener(
-            RecyclerViewScrollListener(
-                recyclerViewVertical = binding.rvVertical,
-                verticalAdapter = verticalAdapter,
-                horizontalAdapter = horizontalAdapter,
-                notificationMode = ScrollListenerNotificationMode.TOAST
-            )
+        scrollListener = RecyclerViewScrollListener(
+            recyclerViewVertical = binding.rvVertical,
+            verticalAdapter = verticalAdapter,
+            horizontalAdapter = horizontalAdapter,
+            notificationMode = ScrollListenerNotificationMode.TEXT
         )
+        binding.rvVertical.setOnScrollChangeListener(scrollListener)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -92,6 +90,7 @@ class MainFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        scrollListener = null
     }
 
 }
