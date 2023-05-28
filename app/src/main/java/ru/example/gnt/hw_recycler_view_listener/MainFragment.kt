@@ -57,6 +57,10 @@ class MainFragment : Fragment() {
         val layoutManager = GridLayoutManager(requireContext(), ContentStorage.verticalItems.size)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
+                /*
+                Предполаналось, что здесь будет и GridLayout с двумя столбцами, но в итоге не понадобилось.
+                Поэтому класс RecyclerViewTypes не используется, хоть и задан.
+                 */
                return ContentStorage.verticalItems.size
             }
         }
