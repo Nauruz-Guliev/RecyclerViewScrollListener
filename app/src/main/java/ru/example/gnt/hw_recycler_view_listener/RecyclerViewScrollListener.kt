@@ -125,6 +125,12 @@ class RecyclerViewScrollListener(
         val itemFirst = layoutManager.findViewByPosition(positionFirst)
         val itemLast = layoutManager.findViewByPosition(positionLast)
 
+        val rvRect = Rect()
+        recyclerViewVertical.getGlobalVisibleRect(rvRect)
+
+        val rowRect = Rect()
+        layoutManager.findViewByPosition(positionFirst)?.getGlobalVisibleRect(rowRect)
+
         val percentFirst = if (isVertical) findPercentageVertical(
             layoutManager,
             positionFirst
