@@ -142,6 +142,8 @@ class RecyclerViewScrollListener(
             visiblePercentage = percentLast
         }
 
+        // runCatching используется для тех случаев, когда notifyDataSetChanged не успел отрисовать
+        // а скроллинг произвести надо. Выбросится исключение, перерисовка не произойдет, но на скролл это не повлияет
         kotlin.runCatching {
             if (isVertical) verticalAdapter.notifyDataSetChanged() else horizontalAdapter.notifyDataSetChanged()
             /*
